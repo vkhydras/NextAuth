@@ -3,6 +3,39 @@ import { EnvelopeIcon, EyeIcon, EyeSlashIcon, KeyIcon, PhoneIcon, UserIcon } fro
 import { Button, Checkbox, Input } from "@nextui-org/react"
 import Link from "next/link";
 import { useState } from "react"
+import { z } from "zod";
+import validator from "validator";
+
+
+const FormSchema = z.object({
+    firstName: z.string()
+        .min(2,"First Name ust be atleats two characters")
+        .max(45,"Fist name must be less than 45 characters")
+        .regex(new RegExp("[a-zA-A]+$","No special characters allow")),
+    lastName: z.string()
+        .min(2,"First Name ust be atleats two characters")
+        .max(45,"Fist name must be less than 45 characters")
+        .regex(new RegExp("[a-zA-A]+$","No special characters allow")),
+    email: z.string()
+        .email("Please enter a valid email"),
+    phone: z.string()
+        .refine(validator.isMobilePhone,"Please enter a valid phone numbe"),
+    password: z.string()
+        .min(6,"Password must be atleast 6 characters")
+        .max(50,"Password must be less than 50 characters"),
+    comfirmPassword: z.string()
+        .min(6,"Password must be atleast 6 characters")
+        .max(50,"Password must be less than 50 characters"),
+    accepted: z.literal(true,{
+        errorMap: ()=>({
+            message: "Please accept all terms"
+        })
+    })
+
+}).refine(data=> data.password===data.comfirmPassword,{
+    message:"Password and comfirm password do not match",
+    path:["password","confirmPassword"],
+})
 
 const SignupForm = () => {
 
