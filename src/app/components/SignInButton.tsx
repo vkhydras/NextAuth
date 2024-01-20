@@ -8,6 +8,7 @@ import React from 'react'
 export default function SignInButton() {
 
     const {data:session} = useSession()
+    console.log({session})
 
   return (
     <div className='flex items-center gap-2'>
