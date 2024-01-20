@@ -2,11 +2,14 @@
 import { EnvelopeIcon, EyeIcon, EyeSlashIcon, KeyIcon, PhoneIcon, UserIcon } from "@heroicons/react/16/solid"
 import { Button, Checkbox, Input } from "@nextui-org/react"
 import Link from "next/link";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { z } from "zod";
 import validator from "validator";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { passwordStrength } from "check-password-strength";
+import PassStrength from "./PassStrength";
+
 
 
 
@@ -44,11 +47,16 @@ type InputType = z.infer<typeof FormSchema>
 
 const SignupForm = () => {
 
-    const {register,handleSubmit,reset,control, formState:{errors}} = useForm<InputType>({
+    const {register,handleSubmit,reset,control, formState:{errors},watch} = useForm<InputType>({
         resolver: zodResolver(FormSchema)
     })
-
+    
+    const[passStr, setPassStr] = useState(0)
     const [visible,setVisible] = useState(false)
+
+    useEffect(()=>{
+        setPassStr(passwordStrength(watch().password).id)
+    },[watch().password])
     const toggleVisible = () => setVisible(prev=>!prev)
 
     const saveUser: SubmitHandler<InputType> = async(data) =>{
@@ -69,6 +77,8 @@ const SignupForm = () => {
             :
          <EyeIcon className="w-4 cursor-pointer" onClick={toggleVisible}/>
         }></Input>
+
+        <PassStrength passStrength={passStr}/>
 
         <Input errorMessage = {errors.confirmPassword?.message} isInvalid = {!!errors.confirmPassword} {...register("confirmPassword")} className="col-span-2" label="Comfirm Password" type={visible? "text":"password"} startContent={<KeyIcon className="w-4"/>}></Input>
 
