@@ -6,6 +6,8 @@ import { useState } from "react"
 import { z } from "zod";
 import validator from "validator";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 
 
 const FormSchema = z.object({
@@ -42,7 +44,9 @@ type InputType = z.infer<typeof FormSchema>
 
 const SignupForm = () => {
 
-    const {register,handleSubmit,reset,control} = useForm<InputType>()
+    const {register,handleSubmit,reset,control, formState:{errors}} = useForm<InputType>({
+        resolver: zodResolver(FormSchema)
+    })
 
     const [visible,setVisible] = useState(false)
     const toggleVisible = () => setVisible(prev=>!prev)
@@ -52,27 +56,28 @@ const SignupForm = () => {
     }
 
     return <form onSubmit={handleSubmit(saveUser)} className="grid grid-cols-2 gap-3 p-2 shadow border rounded-md place-self-stretch"  action="">
-        <Input {...register("firstName")}label="first Name" startContent={<UserIcon className="w-4"/>}></Input>
+        <Input errorMessage = {errors.firstName?.message} isInvalid = {!!errors.firstName} {...register("firstName")}label="first Name" startContent={<UserIcon className="w-4"/>}></Input>
 
-        <Input {...register("lastName")} label="Last Name" startContent={<UserIcon className="w-4"/>}></Input>
+        <Input errorMessage = {errors.lastName?.message} isInvalid = {!!errors.lastName} {...register("lastName")} label="Last Name" startContent={<UserIcon className="w-4"/>}></Input>
 
-        <Input {...register("email")} className="col-span-2" label="Email" startContent={<EnvelopeIcon className="w-4"/>}></Input>
+        <Input errorMessage = {errors.email?.message} isInvalid = {!!errors.email} {...register("email")} className="col-span-2" label="Email" startContent={<EnvelopeIcon className="w-4"/>}></Input>
 
-        <Input {...register("phone")} className="col-span-2" label="Phone" startContent={<PhoneIcon className="w-4"/>}></Input>
+        <Input errorMessage = {errors.phone?.message} isInvalid = {!!errors.phone} {...register("phone")} className="col-span-2" label="Phone" startContent={<PhoneIcon className="w-4"/>}></Input>
 
-        <Input {...register("password")} className="col-span-2" label="Password" type={visible? "text":"password"} startContent={<KeyIcon className="w-4"/>} endContent={
+        <Input errorMessage = {errors.password?.message} isInvalid = {!!errors.password} {...register("password")} className="col-span-2" label="Password" type={visible? "text":"password"} startContent={<KeyIcon className="w-4"/>} endContent={
         visible? <EyeSlashIcon className="w-4 cursor-pointer" onClick={toggleVisible}/>
             :
          <EyeIcon className="w-4 cursor-pointer" onClick={toggleVisible}/>
         }></Input>
 
-        <Input {...register("confirmPassword")} className="col-span-2" label="Comfirm Password" type={visible? "text":"password"} startContent={<KeyIcon className="w-4"/>}></Input>
+        <Input errorMessage = {errors.confirmPassword?.message} isInvalid = {!!errors.confirmPassword} {...register("confirmPassword")} className="col-span-2" label="Comfirm Password" type={visible? "text":"password"} startContent={<KeyIcon className="w-4"/>}></Input>
 
         <Controller control={control} name="accepted" render={({field})=>(
-            <Checkbox onChange={field.onChange} onBlur={field.onBlur} className="col-span-2">
+            <Checkbox  onChange={field.onChange} onBlur={field.onBlur} className="col-span-2">
                 I accept The <Link href="/Terms">Terms</Link>
             </Checkbox>
         )} />
+        {!!errors.accepted && <p className="text-red-500">{errors.accepted.message}</p>}
 
 
         <div className="flex justify-center col-span-2">
@@ -80,6 +85,6 @@ const SignupForm = () => {
         </div>
 
     </form>
-} 
+}
 
 export default SignupForm
