@@ -9,12 +9,14 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordStrength } from "check-password-strength";
 import PassStrength from "./PassStrength";
+import { registerUser } from "@/lib/actions/authActions";
+import { toast } from "react-toastify";
 
 
 
 
 const FormSchema = z.object({
-    firstName: z.string()
+    firtName: z.string()
         .min(2,"First Name ust be atleats two characters")
         .max(45,"Fist name must be less than 45 characters")
         .regex(new RegExp("[a-zA-A]+$"),"No special characters allow"),
@@ -60,11 +62,20 @@ const SignupForm = () => {
     const toggleVisible = () => setVisible(prev=>!prev)
 
     const saveUser: SubmitHandler<InputType> = async(data) =>{
-        console.log(data)
+        const { accepted, confirmPassword, ...user } = data;
+    
+        try {
+            const result = await registerUser(user);
+            toast.success("User Registered succefully")
+        } catch (error) {
+            toast.error("Something went wrong")
+            console.log(error)
+        }
     }
+    
 
     return <form onSubmit={handleSubmit(saveUser)} className="grid grid-cols-2 gap-3 p-2 shadow border rounded-md place-self-stretch"  action="">
-        <Input errorMessage = {errors.firstName?.message} isInvalid = {!!errors.firstName} {...register("firstName")}label="first Name" startContent={<UserIcon className="w-4"/>}></Input>
+        <Input errorMessage = {errors.firtName?.message} isInvalid = {!!errors.firtName} {...register("firtName")}label="first Name" startContent={<UserIcon className="w-4"/>}></Input>
 
         <Input errorMessage = {errors.lastName?.message} isInvalid = {!!errors.lastName} {...register("lastName")} label="Last Name" startContent={<UserIcon className="w-4"/>}></Input>
 
