@@ -1,5 +1,8 @@
+import Handlebars from "handlebars";
 import nodemailer from "nodemailer";
-require('dotenv').config();
+import { activationTemplate } from "./emailTemplates/activation";
+// require('dotenv').config();
+
 
 export async function sendMail({ to, subject, body }: {
     to: string,
@@ -34,4 +37,13 @@ export async function sendMail({ to, subject, body }: {
     } catch (error) {
         console.log(error)
     }
+}
+
+export function compileActivationTemplate(name:string, url:string){
+    const template = Handlebars.compile(activationTemplate)
+    const htmlBody = template({
+        name,
+        url,
+    })
+    return htmlBody
 }
