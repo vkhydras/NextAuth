@@ -12,8 +12,8 @@ export async function sendMail({ to, subject, body }: {
         port: 587,          
         secure: false,
         auth: {
-            user: process.env.SMTP_EMAIL,
-            pass: process.env.SMTP_GMAIL_PASS
+            user: SMTP_EMAIL,
+            pass: SMTP_GMAIL_PASS
         }
     });
 
