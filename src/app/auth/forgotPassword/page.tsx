@@ -1,9 +1,11 @@
 "use client"
+import { forgotPassword } from "@/lib/actions/authActions"
 import { EnvelopeIcon } from "@heroicons/react/16/solid"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input } from "@nextui-org/react"
 import Image from "next/image"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 import { z } from "zod"
 
 
@@ -20,7 +22,15 @@ export default function ForgotPasswordPage() {
     })
 
     const submitRequest: SubmitHandler<InputType> =async (data) => {
-        
+        try {
+            const result = await forgotPassword(data.email);
+            toast.success("Reset Password link sent to your email");
+            reset();
+          } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong");
+          }
+          
     }
 
   return (

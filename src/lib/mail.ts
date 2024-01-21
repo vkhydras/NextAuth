@@ -1,6 +1,7 @@
 import Handlebars from "handlebars";
 import nodemailer from "nodemailer";
 import { activationTemplate } from "./emailTemplates/activation";
+import { resetPasswordTemplate } from "./emailTemplates/resetPass";
 // require('dotenv').config();
 
 
@@ -41,6 +42,15 @@ export async function sendMail({ to, subject, body }: {
 
 export function compileActivationTemplate(name:string, url:string){
     const template = Handlebars.compile(activationTemplate)
+    const htmlBody = template({
+        name,
+        url,
+    })
+    return htmlBody
+}
+
+export function compileResetPassTemplate(name:string, url:string){
+    const template = Handlebars.compile(resetPasswordTemplate)
     const htmlBody = template({
         name,
         url,
