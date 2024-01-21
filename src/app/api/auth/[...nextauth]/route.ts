@@ -1,3 +1,4 @@
+import { signIn } from 'next-auth/react';
 import {AuthOptions} from "next-auth"
 import  CredentialsProvider  from "next-auth/providers/credentials"
 import prisma from "@/lib/prisma"
@@ -6,6 +7,11 @@ import NextAuth from "next-auth/next"
 import { User } from "@prisma/client"
 
 export const authOptions : AuthOptions = {
+
+    pages:{
+        signIn: "/auth/signin"
+    },
+
     providers : [
         
         CredentialsProvider({
