@@ -36,10 +36,12 @@ export default function ResetPassForm ({jwtUserId}:Props) {
     const {register,handleSubmit,reset, formState:{errors,isSubmitting},watch} = useForm<InputType>({
         resolver: zodResolver(FormSchema)
     })
+
+    const pass = watch().password
     
     useEffect(()=>{
         setPassStr(passwordStrength(watch().password).id)
-    },[watch().password])
+    },[pass,watch])
 
     const resetPassword: SubmitHandler<InputType> = async(data)=>{
         try {

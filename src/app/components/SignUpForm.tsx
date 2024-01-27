@@ -56,9 +56,11 @@ const SignupForm = () => {
     const[passStr, setPassStr] = useState(0)
     const [visible,setVisible] = useState(false)
 
+    const pass = watch().password
+
     useEffect(()=>{
         setPassStr(passwordStrength(watch().password).id)
-    },[watch().password])
+    },[pass,watch])
     const toggleVisible = () => setVisible(prev=>!prev)
 
     const saveUser: SubmitHandler<InputType> = async(data) =>{
